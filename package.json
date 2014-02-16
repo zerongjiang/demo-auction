@@ -1,0 +1,13 @@
+{
+  "name": "auction",
+  "version": "0.0.0",
+  "dependencies": {
+    "express": "3.x",
+    "hiredis": "*",
+    "redis": "*",
+    "jade": "*",
+    "async": "~0.2.10"
+  },
+  "author": "Zerong Jiang",
+  "license": "ISC"
+}

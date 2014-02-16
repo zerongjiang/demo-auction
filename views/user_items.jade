@@ -1,0 +1,107 @@
+doctype html
+html(lang="en", ng-app="ngApp")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title #{username}'s items
+    link(rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
+    //- link(rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js")
+    script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js")
+    script(src="/js/ng.js")
+    script.
+      var uid = #{uid};
+
+  body(ng-controller="itemListCtrl")
+    nav(role="navigation").navbar.navbar-default
+      .navbar-header
+        button(type="button", data-toggle="collapse", data-target=".navbar-ex1-collapse").navbar-toggle
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a(href="#" ).navbar-brand Auction Demo
+      .collapse.navbar-collapse.navbar-ex1-collapse
+        ul.nav.navbar-nav 
+          li: a(href="/user/1/items") Auctioneer1's items
+          li: a(href="/user/2/items") Auctioneer2's items
+        ul.nav.navbar-nav.navbar-right
+          //- li: a(href="#") Link
+
+    .container
+      .panel.panel-default
+        .panel-heading #{username}'s items
+        .panel-body
+          ul.list-group
+            li(ng-repeat="item in items" ng-controller="itemCtrl").list-group-item
+              .col-sm-9.col-md-9.col-lg-9
+                h2 {{item.name}}
+                div(ng-if="item.isOpen")
+                  h4 Highest Bid: ${{item.highestBid}}
+                  button(type="button" ng-click="closeItem()").btn.btn-primary Close as #{username}
+                div(ng-if="!item.isOpen && item.isDeal")
+                  h4 Deal: ${{item.dealPrice}}
+                div(ng-if="!item.isOpen && !item.isDeal")
+                  h4 Auction Failed.
+                button(type="button", ng-click="itemHistory()", href='#item-history', data-toggle='modal').btn.btn-primary History
+
+              div(ng-if="item.isOpen").col-sm-3.col-md-3.col-lg-3
+                .row
+                  .form-group
+                    .input-group.input-group-xs
+                      span.input-group-addon $
+                      input(type="text", required="required", placeholder="buyer1's price", ng-model="$parent.price1").form-control
+                    button(type="button" ng-click="bid1()").btn.btn-primary.btn-sm.form-control Bid as Buyer1
+
+                .row
+                  .form-group
+                    .input-group.input-group-xs
+                      span.input-group-addon $
+                      input(type="text", required="required", placeholder="buyer2's price", ng-model="$parent.price2").form-control
+                    button(type="button" ng-click="bid2()").btn.btn-primary.btn-sm.form-control Bid as Buyer2
+
+              .clearfix
+
+      .col-sm-6.col-md-6.col-lg-6
+        .panel.panel-default
+          .panel-heading Create New Item for Auction
+          .panel-body
+            form(role='form').form-horizontal
+              .form-group
+                label(for='').col-sm-3.control-label Name
+                .col-sm-9
+                  input.form-control(type='text', placeholder='New Item Name', ng-model="itemName")
+
+              .form-group
+                label(for='').col-sm-3.control-label Price
+                .col-sm-9
+                  input.form-control(type='text', placeholder='Reserved Price', ng-model="itemReservedPrice")
+
+              .form-group
+                .col-sm-10.col-sm-offset-3
+                  button.btn.btn-primary(type='submit', ng-click="createItem()") Submit
+
+      .clearfix
+
+      #item-history.modal.fade
+        .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+              h4.modal-title Item "{{itemHistory.name}}" is {{ itemHistory.isOpen ? 'on Auction' : 'Closed'}}
+            .modal-body
+
+              h5(ng-if="!itemHistory.isOpen") {{itemHistory.isDeal ? 'Deal Price: $'+itemHistory.dealPrice+', bought by '+itemHistory.bids[0].username : 'Failed on Deal'}}
+              table.table.table-hover
+                thead
+                  tr
+                    th User
+                    th bid
+                tbody
+                  tr(ng-repeat="bid in itemHistory.bids")
+                    td {{bid.username}}
+                    td {{bid.price}}
+            //- .modal-footer
+            //-   button.btn.btn-default(type='button', data-dismiss='modal') Close

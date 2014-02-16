@@ -1,0 +1,9 @@
+{
+    "browser"   : true,
+    "node"      : true,
+    "strict"    : false,
+    "devel"     :true,
+    "predef"    : [
+        "angular"
+    ],
+}
